@@ -15,7 +15,7 @@ type Api struct {
 	books  *Books
 }
 
-// Books - структура для хранения книг
+// Books - тип для хранения книг
 type Books []Book
 
 type Book struct {

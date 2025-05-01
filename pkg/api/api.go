@@ -1,8 +1,9 @@
-package handlers
+package api
 
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
+	m "github.com/sayhellolexa/api-example/pkg/middleware"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -28,8 +29,21 @@ type Author struct {
 	Lastname  string `json:"lastname"`
 }
 
+// New - конструктор API
+func New() *Api {
+	api := &Api{
+		Router: mux.NewRouter(),
+		Books:  &Books{},
+	}
+	api.endpoints()
+
+	return api
+}
+
 // Endpoints - эндпоинты API
-func (a *Api) Endpoints() {
+func (a *Api) endpoints() {
+	a.Router.Use(m.JsonHeaderMiddleware)
+
 	a.Router.HandleFunc("/books", a.Books.getBooks).Methods(http.MethodGet)
 	a.Router.HandleFunc("/books/{id}", a.Books.getBook).Methods(http.MethodGet)
 	a.Router.HandleFunc("/books", a.Books.createBook).Methods(http.MethodPost)

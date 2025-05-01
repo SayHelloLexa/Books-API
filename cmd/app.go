@@ -1,21 +1,13 @@
 package main
 
 import (
+	h "github.com/sayhellolexa/api-example/pkg/api"
+	"log"
 	"net/http"
-
-	h "github.com/sayhellolexa/api-example/api/handlers"
-	m "github.com/sayhellolexa/api-example/api/middleware"
-
-	"github.com/gorilla/mux"
 )
 
 func main() {
-	a := &h.Api{
-		Router: mux.NewRouter(),
-		Books:  &h.Books{},
-	}
-
-	a.Router.Use(m.JsonHeaderMiddleware)
+	a := h.New()
 
 	*a.Books = append(*a.Books, h.Book{
 		ID:    "1",
@@ -35,6 +27,6 @@ func main() {
 		},
 	})
 
-	a.Endpoints()
+	log.Println("Сервер слушает :8080...")
 	http.ListenAndServe(":8080", a.Router)
 }

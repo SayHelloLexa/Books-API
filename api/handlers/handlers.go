@@ -1,18 +1,17 @@
-package main
+package handlers
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
 	"math/rand"
 	"net/http"
 	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 // Api - определение структуры API
 type Api struct {
-	router *mux.Router
-	books  *Books
+	Router *mux.Router
+	Books  *Books
 }
 
 // Books - тип для хранения книг
@@ -31,23 +30,20 @@ type Author struct {
 
 // Endpoints - эндпоинты API
 func (a *Api) Endpoints() {
-	a.router.HandleFunc("/books", a.books.getBooks).Methods(http.MethodGet)
-	a.router.HandleFunc("/books/{id}", a.books.getBook).Methods(http.MethodGet)
-	a.router.HandleFunc("/books", a.books.createBook).Methods(http.MethodPost)
-	a.router.HandleFunc("/books/{id}", a.books.updBook).Methods(http.MethodPut)
-	a.router.HandleFunc("/books/{id}", a.books.deleteBook).Methods(http.MethodDelete)
+	a.Router.HandleFunc("/books", a.Books.getBooks).Methods(http.MethodGet)
+	a.Router.HandleFunc("/books/{id}", a.Books.getBook).Methods(http.MethodGet)
+	a.Router.HandleFunc("/books", a.Books.createBook).Methods(http.MethodPost)
+	a.Router.HandleFunc("/books/{id}", a.Books.updBook).Methods(http.MethodPut)
+	a.Router.HandleFunc("/books/{id}", a.Books.deleteBook).Methods(http.MethodDelete)
 }
 
 // getBooks - получить все книги
 func (b *Books) getBooks(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(b)
 }
 
 // getBook - получить книгу по ID
 func (b *Books) getBook(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	params := mux.Vars(r)
 	for _, item := range *b {
 		if item.ID == params["id"] {
@@ -60,8 +56,6 @@ func (b *Books) getBook(w http.ResponseWriter, r *http.Request) {
 
 // createBook - инициализировать книгу
 func (b *Books) createBook(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	var book Book
 	_ = json.NewDecoder(r.Body).Decode(&book)
 	book.ID = strconv.Itoa(rand.Intn(100000))
@@ -71,7 +65,6 @@ func (b *Books) createBook(w http.ResponseWriter, r *http.Request) {
 
 // updBook - обновить ID книги
 func (b *Books) updBook(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
 	for i, item := range *b {
@@ -90,7 +83,6 @@ func (b *Books) updBook(w http.ResponseWriter, r *http.Request) {
 
 // deleteBook - удалить книгу
 func (b *Books) deleteBook(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
 	for i, item := range *b {

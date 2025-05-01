@@ -3,31 +3,37 @@
 `app.go` - пример приложения, использующее API
 
 ```Go
-func main() {
-	a := &Api{
-		router: mux.NewRouter(),
-		books:  &Books{},
-	}
+package main
 
-	*a.books = append(*a.books, Book{
+import (
+	"log"
+	"net/http"
+
+	h "github.com/sayhellolexa/api-example/pkg/api"
+)
+
+func main() {
+	a := h.New()
+
+	*a.Books = append(*a.Books, h.Book{
 		ID:    "1",
 		Title: "Властелин колец",
-		Author: &Author{
+		Author: &h.Author{
 			Firstname: "Джон",
 			Lastname:  "Толкин",
 		},
 	})
 
-	*a.books = append(*a.books, Book{
+	*a.Books = append(*a.Books, h.Book{
 		ID:    "2",
 		Title: "Преступление и наказание",
-		Author: &Author{
+		Author: &h.Author{
 			Firstname: "Федор",
 			Lastname:  "Достоевский",
 		},
 	})
 
-	a.Endpoints()
-	http.ListenAndServe(":8080", a.router)
+	log.Println("Сервер слушает :8080...")
+	http.ListenAndServe(":8080", a.Router)
 }
-``` 
+```

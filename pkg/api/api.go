@@ -2,11 +2,13 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	m "github.com/sayhellolexa/api-example/pkg/middleware"
 	"math/rand"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
+
+	m "github.com/sayhellolexa/api-example/pkg/middleware"
 )
 
 // Api - определение структуры API

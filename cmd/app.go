@@ -1,9 +1,10 @@
 package main
 
 import (
-	h "github.com/sayhellolexa/api-example/pkg/api"
 	"log"
 	"net/http"
+
+	h "github.com/sayhellolexa/api-example/pkg/api"
 )
 
 func main() {

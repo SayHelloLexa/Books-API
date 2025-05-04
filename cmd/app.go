@@ -4,25 +4,25 @@ import (
 	"log"
 	"net/http"
 
-	h "github.com/sayhellolexa/api-example/pkg/api"
+	"github.com/sayhellolexa/api-example/pkg/api"
 )
 
 func main() {
-	a := h.New()
+	a := api.New()
 
-	*a.Books = append(*a.Books, h.Book{
+	*a.Books = append(*a.Books, api.Book{
 		ID:    "1",
 		Title: "Властелин колец",
-		Author: &h.Author{
+		Author: &api.Author{
 			Firstname: "Джон",
 			Lastname:  "Толкин",
 		},
 	})
 
-	*a.Books = append(*a.Books, h.Book{
+	*a.Books = append(*a.Books, api.Book{
 		ID:    "2",
 		Title: "Преступление и наказание",
-		Author: &h.Author{
+		Author: &api.Author{
 			Firstname: "Федор",
 			Lastname:  "Достоевский",
 		},

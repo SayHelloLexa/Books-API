@@ -2,17 +2,16 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"math/rand"
 	"net/http"
 	"strconv"
-
-	"github.com/gorilla/mux"
-
-	m "github.com/sayhellolexa/api-example/pkg/middleware"
 )
 
 // Api - определение структуры API
 type Api struct {
+	Store  *sessions.CookieStore
 	Router *mux.Router
 	Books  *Books
 }
@@ -34,6 +33,7 @@ type Author struct {
 // New - конструктор API
 func New() *Api {
 	api := &Api{
+		Store:  sessions.NewCookieStore([]byte("32-byte-long-auth-key-123456789012")),
 		Router: mux.NewRouter(),
 		Books:  &Books{},
 	}
@@ -43,14 +43,17 @@ func New() *Api {
 }
 
 // Endpoints - эндпоинты API
-func (a *Api) endpoints() {
-	a.Router.Use(m.JsonHeaderMiddleware)
+func (api *Api) endpoints() {
+	api.Router.Use(JsonHeaderMiddleware)
+	api.Router.Use(api.ApiSessionMiddleware)
 
-	a.Router.HandleFunc("/books", a.Books.getBooks).Methods(http.MethodGet)
-	a.Router.HandleFunc("/books/{id}", a.Books.getBook).Methods(http.MethodGet)
-	a.Router.HandleFunc("/books", a.Books.createBook).Methods(http.MethodPost)
-	a.Router.HandleFunc("/books/{id}", a.Books.updBook).Methods(http.MethodPut)
-	a.Router.HandleFunc("/books/{id}", a.Books.deleteBook).Methods(http.MethodDelete)
+	api.Router.HandleFunc("/api/v1/authSession", api.authSession).Methods(http.MethodPost)
+
+	api.Router.HandleFunc("/api/v1/books", api.Books.getBooks).Methods(http.MethodGet)
+	api.Router.HandleFunc("/api/v1/books/{id}", api.Books.getBook).Methods(http.MethodGet)
+	api.Router.HandleFunc("/api/v1/books", api.Books.createBook).Methods(http.MethodPost)
+	api.Router.HandleFunc("/api/v1/books/{id}", api.Books.updBook).Methods(http.MethodPut)
+	api.Router.HandleFunc("/api/v1/books/{id}", api.Books.deleteBook).Methods(http.MethodDelete)
 }
 
 // getBooks - получить все книги

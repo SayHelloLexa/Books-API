@@ -45,9 +45,11 @@ func New() *Api {
 // Endpoints - эндпоинты API
 func (api *Api) endpoints() {
 	api.Router.Use(JsonHeaderMiddleware)
-	api.Router.Use(api.ApiSessionMiddleware)
+	//api.Router.Use(api.ApiSessionMiddleware)
+	api.Router.Use(api.JwtMiddleware)
 
-	api.Router.HandleFunc("/api/v1/authSession", api.authSession).Methods(http.MethodPost)
+	api.Router.HandleFunc("/api/v1/authSession", api.authSession).Methods(http.MethodPost, http.MethodOptions)
+	api.Router.HandleFunc("/api/v1/authJWT", api.authJWT).Methods(http.MethodPost, http.MethodOptions)
 
 	api.Router.HandleFunc("/api/v1/books", api.Books.getBooks).Methods(http.MethodGet)
 	api.Router.HandleFunc("/api/v1/books/{id}", api.Books.getBook).Methods(http.MethodGet)
